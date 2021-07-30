@@ -1,9 +1,12 @@
+from django.http.response import JsonResponse
 from django.shortcuts import render, redirect
 from django.views import View
 from .models import CATEGORY_CHOICES, Customer, Product, Cart, Orderplaced
 from .forms import CustomerRegistrationForm, CustomerProfileForm
 from app import forms
 from django.contrib import messages
+from django.db.models import Q
+from django.http import JsonResponse
 
 
 class ProductView(View):
@@ -45,8 +48,32 @@ def show_cart(request):
                 totalamount = amount + shipping_amount
 
             return render(request, 'app/addtocart.html', {'carts': cart, 'totalamount': totalamount, 'amount': amount})
-        
-        else: return render(request, 'app/emptycart.html')
+
+        else:
+            return render(request, 'app/emptycart.html')
+
+
+def plus_cart(request):
+    if request.method == 'GET':
+        prod_id = request.GET['prod_id']
+        print(prod_id)
+        c = Cart.objects.get(Q(product=prod_id) & Q(user=request.user))
+        c.quantity += 1
+        c.save()
+        amount = 0.0
+        shipping_amount = 70.0
+        cart_product = [p for p in Cart.objects.all() if p.user == request.user]
+        for p in cart_product:
+            tempamount = (p.quantity * p.product.discounted_price)
+            amount += tempamount
+            totalamount = amount + shipping_amount
+        data = {
+            'quantity': c.quantity,
+            'amount': amount,
+            'totalamount': totalamount
+            }
+        return JsonResponse(data)
+
 
 def buy_now(request):
     return render(request, 'app/buynow.html')
