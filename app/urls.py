@@ -27,6 +27,10 @@ urlpatterns = [
     path('mobile/', views.mobile, name='mobile'),
     path('mobile/<slug:data> ', views.mobile, name='mobiledata'),
 
+    path('topwear/', views.topwear, name='topwear'),
+    path('bottomwear/', views.bottomwear, name='bottomwear'),
+
+
 
     path('accounts/login/', auth_views.LoginView.as_view(template_name="app/login.html",
          authentication_form=LoginForm), name='login'),

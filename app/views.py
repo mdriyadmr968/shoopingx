@@ -146,6 +146,23 @@ def mobile(request, data=None):
     return render(request, 'app/mobile.html', {'mobiles': mobiles})
 
 
+def topwear(request, data=None):
+    if data == None:
+        topwears = Product.objects.filter(category='TW')
+    return render(request, 'app/topwear.html', {'topwears': topwears})
+
+def bottomwear(request, data=None):
+    if data == None:
+        bottomwears = Product.objects.filter(category='BW')
+    return render(request, 'app/bottomwear.html', {'bottomwears': bottomwears})
+
+
+
+
+
+
+
+
 class CustomerRegistrationView(View):
     def get(self, request):
         form = CustomerRegistrationForm()
